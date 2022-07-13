@@ -4,7 +4,8 @@ Working hours counter is a project focusing on autonomization of taking notes fo
 
 ## Installation
 
-Download 'main.py' and 'Working Hours.xlsx' to the same file directory.
+Download 'main.py' and 'Working Hours.xlsx' to the same file directory.</br>
+Targeted os: Windows
 
 ## Warning!
 
