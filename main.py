@@ -5,7 +5,7 @@ import sys
 
 # region startup config
 today, note = '', ''
-hours = 0
+hours, stop_time = 0, 0
 today_already_has_entry = False
 
 file_name = "Working Hours.xlsx"  # Change filename or use path if needed
@@ -31,10 +31,9 @@ def find_row():
 			return str(row_num)
 
 
-def calculate_time(start, end):
-	seconds = end - start
-	minutes = seconds / 60
-	return round(minutes / 60, 2)
+def calculate_working_time(start, end):  # returns working time in hours
+	working_time = end - start - stop_time
+	return round(working_time / 60 / 60, 2)
 
 
 def upload_data():
@@ -65,18 +64,41 @@ def save_file():
 	print("File saved successfully")
 
 
+def session_stopped():
+	global stop_time
+	stop_start = time.time()
+	print("TIME STOPPED")
+	command = input("Type 'continue' or 'end': ")
+	while command not in ['continue', 'end']:
+		command = input("Incorrect. Type 'continue' or 'stop': ")
+
+	if command == 'continue':
+		print("TIME STARTED AGAIN")
+		stop_end = time.time()
+		stop_time += stop_end - stop_start
+		session_running()
+	else:
+		stop_end = time.time()
+		stop_time += stop_end - stop_start
+
+
+def session_running():
+	command = input("Type 'stop' or 'end': ")
+	while command not in ['stop', 'end']:
+		command = input("Incorrect. Type 'end' or 'stop': ")
+	if command == 'stop':
+		session_stopped()
+
+
 def main():
 	global today, hours, note
-	start = time.time()
+	work_start = time.time()
 	print("TIME STARTED")
 	today = get_today()
-	command = input("Type 'end' to stop the program: ")
-	while command != 'end':
-		command = input("Incorrect. Type 'end': ")
-	end = time.time()
+	session_running()
+	work_end = time.time()
 	print("TIME ENDED")
-
-	hours = calculate_time(start, end)
+	hours = calculate_working_time(work_start, work_end)
 	note = input("Enter note: ")
 	upload_data()
 	save_file()
